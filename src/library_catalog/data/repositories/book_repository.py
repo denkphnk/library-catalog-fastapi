@@ -25,7 +25,7 @@ class BookRepository(BaseRepository[Book]):
                     Book.author == author if author else True,
                     Book.genre == genre if genre else True,
                     Book.year == year if year else True,
-                    Book.avialable == available if available else True
+                    Book.available == available if available else True
                 )
             ).offset(offset).limit(limit)
         )
@@ -53,7 +53,7 @@ class BookRepository(BaseRepository[Book]):
                     Book.author == author if author else True,
                     Book.genre == genre if genre else True,
                     Book.year == year if year else True,
-                    Book.avialable == available if available else True
+                    Book.available == available if available else True
                 )
             ).offset(offset).limit(limit)
         )

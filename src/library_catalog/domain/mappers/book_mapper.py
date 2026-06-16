@@ -22,7 +22,7 @@ class BookMapper:
             year=book.year,
             genre=book.genre,
             pages=book.pages,
-            available=book.avialable,
+            available=book.available,
             created_at=book.created_at,
             updated_at=book.updated_at,
         )

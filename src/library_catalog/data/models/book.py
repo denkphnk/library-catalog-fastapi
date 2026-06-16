@@ -19,7 +19,7 @@ class Book(Base):
     year: Mapped[int] = mapped_column(Integer, index=True)
     genre: Mapped[str] = mapped_column(String[100], index=True)
     pages: Mapped[int] = mapped_column(Integer)
-    avialable: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    available: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.datetime.now, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.datetime.now, nullable=False)
 
