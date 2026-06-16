@@ -15,6 +15,7 @@ class BaseRepository(Generic[T]):
         new_record = self.model(**kwargs)
         self.session.add(new_record)
         await self.session.commit()
+        await self.session.refresh(new_record)
         return new_record
     
     async def get_by_id(self, id: UUID) -> T | None:
@@ -46,7 +47,7 @@ class BaseRepository(Generic[T]):
             return False
         
         self.session.delete(record)
-        self.session.commit()
+        await self.session.commit()
         return True
     
     async def get_all(self, limit: int = 100, offset: int = 0,

@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
-from base_repository import BaseRepository
+from .base_repository import BaseRepository
 from ..models.book import Book
 
 class BookRepository(BaseRepository[Book]):
@@ -57,4 +57,4 @@ class BookRepository(BaseRepository[Book]):
                 )
             ).offset(offset).limit(limit)
         )
-        return result.scalars().all()
+        return len(result.scalars().all())
