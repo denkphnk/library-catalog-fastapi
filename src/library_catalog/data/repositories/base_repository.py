@@ -34,7 +34,7 @@ class BaseRepository(Generic[T]):
         if not record:
             return None
         
-        for key, value in kwargs.items:
+        for key, value in kwargs.items():
             setattr(record, key, value)
         
         await self.session.commit()
@@ -46,7 +46,7 @@ class BaseRepository(Generic[T]):
         if not record:
             return False
         
-        self.session.delete(record)
+        await self.session.delete(record)
         await self.session.commit()
         return True
     

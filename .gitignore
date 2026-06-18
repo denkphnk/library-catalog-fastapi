@@ -1,6 +1,5 @@
 DETAILED_ASSIGNMENT_FIXED.md
 .DS_Store
-*yml
-*toml
 .env
-.env.example
+**/__pycache__
+*.pyc
