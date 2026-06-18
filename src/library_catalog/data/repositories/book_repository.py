@@ -22,7 +22,7 @@ class BookRepository(BaseRepository[Book]):
             select(Book).where(
                 and_(
                     Book.title.ilike(f"%{title}%") if title else True,
-                    Book.author.ilike(f"{author}") if author else True,
+                    Book.author.ilike(f"%{author}%") if author else True,
                     Book.genre == genre if genre else True,
                     Book.year == year if year else True,
                     Book.available == available if available else True
@@ -54,7 +54,7 @@ class BookRepository(BaseRepository[Book]):
             select(func.count()).select_from(Book).where(
                 and_(
                     Book.title.ilike(f"%{title}%") if title else True,
-                    Book.author.ilike(f"{author}") if author else True,
+                    Book.author.ilike(f"%{author}%") if author else True,
                     Book.genre == genre if genre else True,
                     Book.year == year if year else True,
                     Book.available == available if available else True

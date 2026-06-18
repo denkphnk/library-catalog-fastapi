@@ -77,14 +77,14 @@ class BaseApiClient(ABC):
                 
                 wait_time = self.backoff * (2 ** attempt)
                 self.logger.warning(f"Timeout, retrying in {wait_time}s...")
-                asyncio.sleep(wait_time)
+                await asyncio.sleep(wait_time)
             
             except httpx.HTTPStatusError as e:
                 # 5xx ошибки - retry
                 if e.response.status_code >= 500 and attempt < self.retries - 1:
                     wait_time = self.backoff * (2 ** attempt)
                     self.logger.warning(f"Server error, retrying in {wait_time}s...")
-                    asyncio.sleep(wait_time)
+                    await asyncio.sleep(wait_time)
                 else:
                     self.logger.error(f"HTTP error: {e}")
                     raise
