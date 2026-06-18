@@ -7,7 +7,6 @@ from ..schemas.book import (
     BookCreate,
     BookUpdate,
     ShowBook,
-    BookFilters,
 )
 from ..schemas.common import PaginatedResponse, PaginationParams
 from ...dependencies import BookServiceDep

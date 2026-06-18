@@ -23,6 +23,9 @@ class BookMapper:
             genre=book.genre,
             pages=book.pages,
             available=book.available,
+            isbn=book.isbn,
+            description=book.description,
+            extra=book.extra,
             created_at=book.created_at,
             updated_at=book.updated_at,
         )

@@ -2,7 +2,12 @@ from uuid import UUID
 from ...api.v1.schemas.book import BookCreate, BookUpdate, ShowBook
 from ...data.repositories.book_repository import BookRepository
 from ...external.openlibrary.client import OpenLibraryClient
-from ..exceptions import *
+from ..exceptions import (
+    BookAlreadyExistsException,
+    BookNotFoundException,
+    InvalidPagesException,
+    InvalidYearException,
+    OpenLibraryException)
 from ..mappers.book_mapper import BookMapper
 
 class BookService:
@@ -43,6 +48,14 @@ class BookService:
         # 1. Валидация бизнес-правил
         self._validate_book_data(book_data)
         
+        # 2. Проверка уникальности ISBN
+        if book_data.isbn:
+            existing = await self.book_repo.find_by_isbn(book_data.isbn)
+            if existing:
+                raise BookAlreadyExistsException(book_data.isbn)
+        
+        # 3. Обогащение данных из Open Library
+        extra = await self._enrich_book_data(book_data)
         
         # 4. Создание в БД
         book = await self.book_repo.create(
@@ -51,8 +64,11 @@ class BookService:
             year=book_data.year,
             genre=book_data.genre,
             pages=book_data.pages,
+            isbn=book_data.isbn,
+            description=book_data.description,
+            extra=extra,
         )
-        
+                
         # 5. Маппинг в DTO
         return BookMapper.to_show_book(book)
     
@@ -166,3 +182,29 @@ class BookService:
         """Проверить что количество страниц валидно."""
         if pages <= 0:
             raise InvalidPagesException(pages)
+        
+    async def _enrich_book_data(
+        self,
+        book_data: BookCreate
+    ) -> dict | None:
+        """
+        Обогатить данные книги из Open Library.
+        
+        Не выбрасывает исключение если API недоступен.
+        """
+        try:
+            extra = await self.ol_client.enrich(
+                title=book_data.title,
+                author=book_data.author,
+                isbn=book_data.isbn,
+            )
+            return extra if extra else None
+        except OpenLibraryException:
+            # Логируем но не прерываем создание книги
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "Failed to enrich book data from Open Library",
+                extra={"title": book_data.title, "author": book_data.author}
+            )
+            return None

@@ -1,5 +1,6 @@
 DETAILED_ASSIGNMENT_FIXED.md
 .DS_Store
 .env
+__pycache__/
 **/__pycache__/
 *.py[cod]

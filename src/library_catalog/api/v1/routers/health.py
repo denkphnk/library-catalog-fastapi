@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..schemas.common import HealthCheckResponse
 from ...dependencies import DbSessionDep

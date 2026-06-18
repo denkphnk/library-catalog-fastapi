@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
+from sqlalchemy import func, select, and_
 from .base_repository import BaseRepository
 from ..models.book import Book
 
@@ -21,8 +21,8 @@ class BookRepository(BaseRepository[Book]):
         result = await self.session.execute(
             select(Book).where(
                 and_(
-                    Book.title == title if title else True,
-                    Book.author == author if author else True,
+                    Book.title.ilike(f"%{title}%") if title else True,
+                    Book.author.ilike(f"{author}") if author else True,
                     Book.genre == genre if genre else True,
                     Book.year == year if year else True,
                     Book.available == available if available else True
@@ -33,7 +33,11 @@ class BookRepository(BaseRepository[Book]):
     
     async def find_by_isbn(self, isbn: str) -> Book | None:
         """Найти книгу по ISBN."""
-        pass
+        res = await self.session.execute(
+            select(Book)
+            .where(Book.isbn == isbn)
+        )
+        return res.scalar_one_or_none()
     
     async def count_by_filters(
         self,
@@ -47,14 +51,14 @@ class BookRepository(BaseRepository[Book]):
     ) -> int:
         """Подсчитать количество книг по фильтрам."""
         result = await self.session.execute(
-            select(Book).where(
+            select(func.count()).select_from(Book).where(
                 and_(
-                    Book.title == title if title else True,
-                    Book.author == author if author else True,
+                    Book.title.ilike(f"%{title}%") if title else True,
+                    Book.author.ilike(f"{author}") if author else True,
                     Book.genre == genre if genre else True,
                     Book.year == year if year else True,
                     Book.available == available if available else True
                 )
-            ).offset(offset).limit(limit)
+            )
         )
-        return len(result.scalars().all())
+        return result.scalar_one()

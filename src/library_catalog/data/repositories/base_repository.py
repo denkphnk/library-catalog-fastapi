@@ -25,6 +25,8 @@ class BaseRepository(Generic[T]):
         📝 Примечание: session.get() автоматически работает с primary key модели,
         независимо от его названия (id, book_id, user_id и т.д.)
         """
+
+
         return await self.session.get(self.model, id)
     
     async def update(self, id: UUID, **kwargs) -> T | None:
