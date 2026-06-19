@@ -34,7 +34,7 @@ class InvalidPagesException(AppException):
 
 class OpenLibraryException(AppException):
     """Ошибка Open Library API."""
-    def __init__(self, message: str):
+    def __init__(self, message: str, status_code: int = 503):
         super().__init__(
             message=f"Open Library API error: {message}",
             status_code=503,
